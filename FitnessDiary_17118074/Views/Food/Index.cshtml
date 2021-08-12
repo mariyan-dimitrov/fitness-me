@@ -1,0 +1,77 @@
+﻿@model IEnumerable<FitnessDiary_17118074.Models.Food>
+@{
+    ViewData["Title"] = "Foods List";
+}
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Foods List</h2>
+        </div>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="col-6 text-right">
+                <a asp-controller="Food" asp-action="Create" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> &nbsp; Add New Food
+                </a>
+            </div>
+        }
+     </div>
+
+    <br /><br />
+
+    @if (Model.Count() > 0)
+    {
+
+
+<table id="foods-table" class="table table-bordered table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>
+                        Food Name
+                    </th>
+                    <th>
+                        Calories in 100g
+                    </th>
+                    @if (User.IsInRole("Administrator") || User.IsInRole("User")) { 
+                        <th></th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var obj in Model)
+                {
+                <tr>
+                    <td width="50%">@obj.Name</td>
+                    <td width="30%">@obj.Calories</td>
+                    @if (User.IsInRole("Administrator"))
+                    {
+                        <td class="text-center">
+                            <div class="w-75 btn-group" role="group">
+                                <a asp-controller="Food" asp-route-Id="@obj.Id" asp-action="Edit" class="btn btn-primary mx-2">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a asp-controller="Food" asp-route-Id="@obj.Id" asp-action="Delete" class="btn btn-danger mx-2">
+                                    <i class="far fa-trash-alt"></i>
+                                </a>
+                            </div>
+                        </td>
+                    }else if (User.IsInRole("User")){
+                    <td class="text-center">
+                        <div class="w-75 btn-group" role="group">
+                            <a asp-controller="Food" asp-route-Id="@obj.Id" asp-action="Edit" class="btn btn-primary mx-2">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </div>
+                    </td>
+                    }
+                </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p> No foods are added.</p>
+    }
+</div>

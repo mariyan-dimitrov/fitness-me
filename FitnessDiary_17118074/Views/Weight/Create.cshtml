@@ -1,0 +1,53 @@
+﻿@model FitnessDiary_17118074.Models.Weight
+@{
+    ViewData["Title"] = "Add Weight";
+}
+
+<form method="post" asp-action="Create" onsubmit="return recordCreated();">
+    <div class="border p-3">
+        <div class="form-group row">
+            <h2 class="text-info pl-3">Add New Weight Record</h2>
+        </div>
+        <div class="row">
+            <div class="col-8">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Mass"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Mass" class="form-control" />
+                        <span asp-validation-for="Mass" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Day"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Day" class="form-control" />
+                        <span asp-validation-for="Day" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-8 offset-4 row">
+
+                        <div class="col">
+                            <input type="submit" class="btn btn-info w-100" value="Create" />
+                        </div>
+                        <div class="col">
+                            <a asp-action="Index" class="btn btn-success w-100"><i class="fas fa-sign-out-alt"></i> Back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+            </div>
+        </div>
+    </div>
+
+</form>
+
+@section Scripts{
+    @{
+       <partial name="_ValidationScriptsPartial" /> }
+}

@@ -1,0 +1,181 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+  color: white !important;
+}
+
+/* Provide sufficient contrast against white background */
+a {
+  color: #0366d6;
+}
+
+.btn-primary {
+    color: white;
+    background-color: #f36;
+    border-color: #f36;
+}
+
+.btn-primary:hover {
+    background-color: #d31c4a;
+    border-color: #d31c4a;
+}
+
+.btn-danger {
+    background-color: lightslategrey !important;
+}
+
+    .btn-danger:hover {
+        background-color: #dc3545 !important;
+} 
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+    background: repeating-linear-gradient( 135deg, rgba(100, 100, 100, 0.125), rgba(0, 0, 0, 0.325) 25%);
+    background-size: 170rem 250rem;
+    background-position: 40%;
+    background-color: #192b3c;
+}
+
+label {
+    color: white !important;
+}
+
+h1, h3 {
+    color: white !important;
+}
+
+.navbar, .footer {
+    background-color: #192b3c !important;
+    border: 1px solid #192b3c !important;
+}
+
+.nav-item > .nav-link {
+    color: #8d9da9 !important;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px; /* Vertically center the text there */
+}
+
+.text-primary {
+    color: white !important;
+}
+
+.home {
+    background: url("../img/background.jpg");
+    height: 900px;
+    max-width: 100% !important;
+}
+
+.home-heading{
+    padding-top: 170px;
+}
+
+.home-heading > h1, p {
+    color: white;
+}
+
+.home-heading > h1 {
+    font-size: 80px;
+    font-weight: bolder;
+}
+
+.home-heading > p {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.home-background {
+    max-width: 100%;
+}
+
+.home-container {
+    margin-top: -3%;
+    max-width: 100%;
+    padding-left: unset;
+    padding-right: unset;
+}
+
+table thead {
+    background-color: #ffffff !important;
+}
+table tbody tr {
+    background-color: #ffffff !important;
+}
+
+.dt-buttons > a {
+    background-color: white !important;
+}
+
+#foods-table_filter{
+    color: white;
+}
+
+#foods-table_filter input {
+    background-color: white;
+}
+
+#foods-table_info, #foods-table_paginate > a {
+    color: white !important;
+}
+
+#weight-table_filter {
+    color: white;
+}
+
+#weight-table_filter input {
+    background-color: white;
+}
+
+#weight-table_info, #weight-table_paginate > a {
+    color: white !important;
+}
