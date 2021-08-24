@@ -4,6 +4,9 @@ using FitnessMe_15118078.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+using FitnessMe_15118078.Common;
+using FitnessMe_15118078.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FitnessMe_15118078.Controllers
 {
@@ -18,7 +21,7 @@ namespace FitnessMe_15118078.Controllers
             db = _db;
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         public IActionResult CreateFood(NutritionVM model)
         {
@@ -56,7 +59,7 @@ namespace FitnessMe_15118078.Controllers
             return Ok();
         }
 
-        //[Authorize(Roles = "Administrator, User")]
+        [Authorize(Roles = "Administrator, User")]
         [HttpGet("{id}")]
         public IActionResult GetFood(int id)
         {
@@ -71,7 +74,7 @@ namespace FitnessMe_15118078.Controllers
             return Ok(nutritionVM);
         }
 
-        //[Authorize(Roles = "Administrator, User")]
+        [Authorize(Roles = "Administrator, User")]
         [HttpPut]
         public IActionResult UpdateFood(NutritionVM model)
         {
@@ -106,9 +109,9 @@ namespace FitnessMe_15118078.Controllers
             return Ok();
         }
 
-        // [Authorize("Administrator")]
-        [HttpDelete]
-        public IActionResult DeleteFood(int? id)
+        [Authorize(Roles = Constants.Roles.Administrator)]
+        [HttpDelete("{id}")]
+        public IActionResult DeleteFood(int id)
         {
             var food = db.Food.Find(id);
             var nutrition = db.Nutrition.FirstOrDefault(u => u.FoodId == food.Id);

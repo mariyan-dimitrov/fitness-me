@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace FitnessMe_15118078.Models
+namespace FitnessMe_15118078.Data.Models
 {
-    public partial class Food
+    public class Food
     {
         [Key]
         public int Id { get; set; }

@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
-namespace FitnessMe_15118078.Models
+namespace FitnessMe_15118078.Data.Models
 {
-    public partial class Weight
+    public class Weight
     { 
         [Key]
         public int Id { get; set; }

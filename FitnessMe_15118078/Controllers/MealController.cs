@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+using FitnessMe_15118078.Data.Models;
 
 namespace FitnessMe_15118078.Controllers
 {
@@ -84,7 +85,7 @@ namespace FitnessMe_15118078.Controllers
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult DeleteMeal(int id)
         {
             var meal = db.Meal.Find(id);

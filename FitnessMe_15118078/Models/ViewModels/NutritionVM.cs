@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FitnessMe_15118078.Data.Models;
 
 namespace FitnessMe_15118078.Models.ViewModels
 {
