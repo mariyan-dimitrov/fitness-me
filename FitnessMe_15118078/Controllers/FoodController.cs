@@ -1,6 +1,5 @@
 ﻿using FitnessMe_15118078.Data;
 using FitnessMe_15118078.Models.ViewModels;
-using FitnessMe_15118078.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -10,102 +9,81 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace FitnessMe_15118078.Controllers
 {
-    [ApiController]
     [Route("api/food")]
-    public class FoodController : Controller
+    public class FoodController : BaseAuthorizeController
     {
-        private readonly FitnessMeDbContext db;
+        private readonly FitnessMeDbContext _dbContext;
 
-        public FoodController(FitnessMeDbContext _db)
+        public FoodController(FitnessMeDbContext dbContext)
         {
-            db = _db;
+            _dbContext = dbContext;
         }
 
-        [Authorize]
         [HttpPost]
-        public IActionResult CreateFood(NutritionVM model)
+        public IActionResult CreateFood(CreateFoodViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            Food food = new Food();
-            food.Name = model.Food.Name;
-            food.CreatedAt_15118078 = DateTime.UtcNow;
-            food.UpdatedAt_15118078 = DateTime.UtcNow;
+            var food = new Food
+            {
+                Name = model.Name,
+                Protein = model.Protein,
+                Carbs = model.Carbs,
+                Fats = model.Fats,
+                Calories = (model.Protein * 4) + (model.Carbs * 4) + (model.Fats * 9),
+                CreatedAt_15118078 = DateTime.UtcNow,
+                UpdatedAt_15118078 = DateTime.UtcNow
+            };
 
-            Nutrition nutrition = new Nutrition();
+            _dbContext.Food.Add(food);
+            _dbContext.SaveChanges();
 
-            nutrition.Protein = model.Nutrition.Protein;
-            int protein = Int32.Parse(nutrition.Protein);
-            nutrition.Carbohydrates = model.Nutrition.Carbohydrates;
-            int carbs = Int32.Parse(nutrition.Carbohydrates);
-            nutrition.Fats = model.Nutrition.Fats;
-            int fats = Int32.Parse(nutrition.Fats);
-
-            food.Calories = (protein * 4) + (carbs * 4) + (fats * 9);
-            db.Food.Add(food);
-            db.SaveChanges();
-
-            int latestFoodId = food.Id;
-            nutrition.FoodId = latestFoodId;
-            nutrition.CreatedAt_15118078 = DateTime.UtcNow;
-            nutrition.UpdatedAt_15118078 = DateTime.UtcNow;
-
-            db.Nutrition.Add(nutrition);
-            db.SaveChanges();
-
-            return Ok();
+            return Ok(food.Id);
         }
 
-        [Authorize(Roles = "Administrator, User")]
-        [HttpGet("{id}")]
-        public IActionResult GetFood(int id)
+        [HttpGet]
+        public IActionResult GetFood()
         {
-            NutritionVM nutritionVM = new NutritionVM();
+            var foods = _dbContext.Food.Select(f => new DisplayFoodViewModel
+                                                {
+                                                    Id = f.Id,
+                                                    Name = f.Name,
+                                                    Fats = f.Fats,
+                                                    Carbs = f.Carbs,
+                                                    Protein = f.Protein,
+                                                })
+                                        .ToArray();
 
-            nutritionVM.Food = db.Food.Find(id);
-            nutritionVM.Nutrition = db.Nutrition.FirstOrDefault(u => u.FoodId == nutritionVM.Food.Id);
-            if (nutritionVM.Food == null)
+            return Ok(foods);
+        }
+
+        [Authorize(Roles = Constants.Roles.Administrator)]
+        [HttpPut("{id}")]
+        public IActionResult UpdateFood(int id, CreateFoodViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            Food food = _dbContext.Food.Find(id);
+            if (food is null)
             {
                 return NotFound();
             }
-            return Ok(nutritionVM);
-        }
 
-        [Authorize(Roles = "Administrator, User")]
-        [HttpPut]
-        public IActionResult UpdateFood(NutritionVM model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            Food food = db.Food.Find(model.Food.Id);
-            food.Name = model.Food.Name;
+            food.Name = model.Name;
+            food.Protein = model.Protein;
+            food.Carbs = model.Carbs;
+            food.Fats = model.Fats;
+            food.Calories = (model.Protein * 4) + (model.Carbs * 4) + (model.Fats * 9);
             food.UpdatedAt_15118078 = DateTime.UtcNow;
 
-            Nutrition nutrition = db.Nutrition.FirstOrDefault(u => u.FoodId == model.Food.Id);
-
-            nutrition.Protein = model.Nutrition.Protein;
-            int protein = Int32.Parse(nutrition.Protein);
-            nutrition.Carbohydrates = model.Nutrition.Carbohydrates;
-            int carbs = Int32.Parse(nutrition.Carbohydrates);
-            nutrition.Fats = model.Nutrition.Fats;
-            int fats = Int32.Parse(nutrition.Fats);
-
-            food.Calories = (protein * 4) + (carbs * 4) + (fats * 9);
-            db.Food.Update(food);
-            db.SaveChanges();
-
-            int latestFoodId = food.Id;
-            nutrition.FoodId = latestFoodId;
-            nutrition.UpdatedAt_15118078 = DateTime.UtcNow;
-
-            db.Nutrition.Update(nutrition);
-            db.SaveChanges();
+            _dbContext.Food.Update(food);
+            _dbContext.SaveChanges();
             return Ok();
         }
 
@@ -113,15 +91,14 @@ namespace FitnessMe_15118078.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteFood(int id)
         {
-            var food = db.Food.Find(id);
-            var nutrition = db.Nutrition.FirstOrDefault(u => u.FoodId == food.Id);
+            Food food = _dbContext.Food.Find(id);
             if (food == null)
             {
                 return NotFound();
             }
-            db.Nutrition.Remove(nutrition);
-            db.Food.Remove(food);
-            db.SaveChanges();
+            
+            _dbContext.Food.Remove(food);
+            _dbContext.SaveChanges();
 
             return Ok();
         }

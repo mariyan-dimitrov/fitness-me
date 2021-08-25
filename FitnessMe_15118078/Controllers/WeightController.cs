@@ -1,78 +1,80 @@
 ﻿using FitnessMe_15118078.Data;
-using FitnessMe_15118078.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using FitnessMe_15118078.Data.Models;
+using FitnessMe_15118078.Models.ViewModels;
 
 namespace FitnessMe_15118078.Controllers
 {
-    [Authorize]
-    [ApiController]
     [Route("api/weight")]
-    public class WeightController : Controller
+    public class WeightController : BaseAuthorizeController
     {
-        private readonly FitnessMeDbContext db;
+        private readonly FitnessMeDbContext _dbContext;
 
-        public WeightController(FitnessMeDbContext _db)
+        public WeightController(FitnessMeDbContext dbContext)
         {
-            db = _db;
+            _dbContext = dbContext;
         }
 
         [HttpPost]
-        public IActionResult CreateWeight(Weight model)
+        public IActionResult CreateWeight(CreateWeightViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(model);
             }
 
-            var user = GetUser();
+            var weight = new Weight
+            {
+                Mass = model.Mass,
+                Day = model.Day,
+                CreatedAt_15118078 = DateTime.UtcNow,
+                UpdatedAt_15118078 = DateTime.UtcNow,
+                UserId = GetUserId()
+            };
 
-            Weight weight = new Weight();
-            weight.UserId = user;
-            weight.Mass = model.Mass;
-            weight.Day = model.Day;
-            weight.CreatedAt_15118078 = DateTime.UtcNow;
-            weight.UpdatedAt_15118078 = DateTime.UtcNow;
+            _dbContext.Weight.Add(weight);
+            _dbContext.SaveChanges();
 
-            db.Weight.Add(weight);
-            db.SaveChanges();
-
-            return Ok();
+            return Ok(weight.Id);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetWeight(int id)
+        [HttpGet]
+        public IActionResult GetWeight()
         {
-            var weight = db.Weight.Find(id);
+            var weights = _dbContext.Weight.Where(w => w.UserId == GetUserId())
+                .Select(w => new DisplayWeightViewModel()
+                {
+                    Id = w.Id,
+                    Day = w.Day,
+                    Mass = w.Mass
+                }).ToArray();
 
-            if (weight == null)
+            return Ok(weights);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateWeight(int id, CreateWeightViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(model);
+            }
+
+            Weight weight = _dbContext.Weight.Find(id);
+            if (weight is null)
             {
                 return NotFound();
             }
-            return Ok(weight);
-        }
 
-        [HttpPut]
-        public IActionResult UpdateWeight(Weight model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(model);
-            }
-
-            var user = GetUser();
-
-            Weight weight = db.Weight.Find(model.Id);
-            weight.UserId = user;
+            weight.UserId = GetUserId();
             weight.Mass = model.Mass;
             weight.Day = model.Day;
             weight.UpdatedAt_15118078 = DateTime.UtcNow;
 
-            db.Weight.Update(weight);
-            db.SaveChanges();
+            _dbContext.Weight.Update(weight);
+            _dbContext.SaveChanges();
 
             return Ok();
         }
@@ -80,27 +82,15 @@ namespace FitnessMe_15118078.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteWeight(int id)
         {
-            var weight = db.Weight.Find(id);
-
+            var weight = _dbContext.Weight.Find(id);
             if (weight == null)
             {
                 return NotFound();
             }
 
-            db.Weight.Remove(weight);
-            db.SaveChanges();
+            _dbContext.Weight.Remove(weight);
+            _dbContext.SaveChanges();
             return Ok();
-        }
-
-        private string GetUser()
-        {
-            var userName = User.Identity.Name;
-            var userId = from u in db.Users
-                where u.UserName == userName
-                select u.Id;
-            string user = (userId.FirstOrDefault() ?? "");
-
-            return user;
         }
     }
 }

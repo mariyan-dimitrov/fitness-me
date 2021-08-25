@@ -1,86 +1,86 @@
 ﻿using FitnessMe_15118078.Data;
-using FitnessMe_15118078.Models;
-using FitnessMe_15118078.Models.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using FitnessMe_15118078.Data.Models;
+using FitnessMe_15118078.Models.ViewModels;
 
 namespace FitnessMe_15118078.Controllers
 {
-    [Authorize]
-    [ApiController]
     [Route("api/meal")]
-    public class MealController : Controller
+    public class MealController : BaseAuthorizeController
     {
-        private readonly FitnessMeDbContext db;
+        private readonly FitnessMeDbContext _dbContext;
 
-        public MealController(FitnessMeDbContext _db)
+        public MealController(FitnessMeDbContext dbContext)
         {
-            db = _db;
+            _dbContext = dbContext;
         }
 
         [HttpPost]
-        public IActionResult CreateMeal(MealVM model)
+        public IActionResult CreateMeal(CreateMealViewModel model)
         {
-            var user = GetUser();
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(model);
             }
-            Meal meal = new Meal();
-            meal.UserId = user;
-            meal.FoodId = model.Meal.FoodId;
-            meal.Date = model.Meal.Date;
-            meal.Portion = model.Meal.Portion;
-            meal.Type = model.Meal.Type;
-            meal.CreatedAt_15118078 = DateTime.UtcNow;
-            meal.UpdatedAt_15118078 = DateTime.UtcNow;
-
-            db.Meal.Add(meal);
-            db.SaveChanges();
-
-            return Ok();
-        }
-
-        [HttpGet("{id}")]
-        public IActionResult GetMeal(int id)
-        {
-            MealVM mealVM = new MealVM();
-
-            mealVM.Meal = db.Meal.Find(id);
-            mealVM.Foods = db.Food.ToList();
-
-            if (mealVM.Meal == null)
+            
+            var meal = new Meal
             {
-                return NotFound();
-            }
-            return Ok(mealVM);
+                UserId = GetUserId(),
+                FoodId = model.FoodId,
+                Date = model.Date,
+                Portion = model.Portion,
+                CreatedAt_15118078 = DateTime.UtcNow,
+                UpdatedAt_15118078 = DateTime.UtcNow
+            };
+
+            _dbContext.Meal.Add(meal);
+            _dbContext.SaveChanges();
+
+            return Ok(meal.Id);
         }
 
-        [HttpPut]
-        public IActionResult UpdateMeal(MealVM model)
+        [HttpGet]
+        public IActionResult GetMeals(int pageNumber, int pageSize)
+        {
+            var meals = _dbContext.Meal.Where(m => m.UserId == GetUserId())
+                                       .Skip(pageNumber * pageSize)
+                                       .Take(pageSize)
+                                       .Select(m => new DisplayMealViewModel()
+                                       {
+                                           Id = m.Id,
+                                           Date = m.Date,
+                                           FoodId = m.FoodId,
+                                           Portion = m.Portion
+                                       })
+                                       .ToArray();
+
+            return Ok(meals);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateMeal(int id, CreateMealViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var user = GetUser();
-           
-            Meal meal = db.Meal.Find(model.Meal.Id);
+            Meal meal = _dbContext.Meal.Find(id);
+            if (meal is null)
+            {
+                return BadRequest();
+            }
 
-            meal.UserId = user;
-            meal.FoodId = model.Meal.FoodId;
-            meal.Date = model.Meal.Date;
-            meal.Portion = model.Meal.Portion;
-            meal.Type = model.Meal.Type;
+            meal.UserId = GetUserId();
+            meal.FoodId = model.FoodId;
+            meal.Date = model.Date;
+            meal.Portion = model.Portion;
             meal.UpdatedAt_15118078 = DateTime.UtcNow;
 
-            db.Meal.Update(meal);
-            db.SaveChanges();
+            _dbContext.Meal.Update(meal);
+            _dbContext.SaveChanges();
 
             return Ok();
         }
@@ -88,26 +88,16 @@ namespace FitnessMe_15118078.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteMeal(int id)
         {
-            var meal = db.Meal.Find(id);
-
+            var meal = _dbContext.Meal.Find(id);
             if (meal == null)
             {
                 return NotFound();
             }
-            db.Meal.Remove(meal);
-            db.SaveChanges();
+
+            _dbContext.Meal.Remove(meal);
+            _dbContext.SaveChanges();
+
             return Ok();
-        }
-
-        private string GetUser()
-        {
-            var userName = User.Identity.Name;
-            var userId = from u in db.Users
-                where u.UserName == userName
-                select u.Id;
-            string user = (userId.FirstOrDefault() ?? "");
-
-            return user;
         }
     }
 }

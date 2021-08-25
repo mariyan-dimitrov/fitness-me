@@ -15,9 +15,13 @@ namespace FitnessMe_15118078.Data.Models
 
         [ForeignKey("UserId")]
         public virtual IdentityUser IdentityUser { get; set; }
+
         public double Mass { get; set; }
+
         public DateTime Day { get; set; }
+
         public DateTime? CreatedAt_15118078 { get; set; }
+
         public DateTime? UpdatedAt_15118078 { get; set; }
     }
 }

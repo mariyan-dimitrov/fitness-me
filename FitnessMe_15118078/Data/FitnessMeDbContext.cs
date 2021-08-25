@@ -15,8 +15,6 @@ namespace FitnessMe_15118078.Data
 
         public DbSet<Meal> Meal { get; set; }
 
-        public DbSet<Nutrition> Nutrition { get; set; }
-
         public DbSet<Weight> Weight { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
