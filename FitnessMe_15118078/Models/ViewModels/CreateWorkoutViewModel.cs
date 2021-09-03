@@ -1,10 +1,17 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace FitnessMe_15118078.Models.ViewModels
 {
-    public class CreateWeightViewModel
+    public class CreateWorkoutViewModel
     {
-        public double Mass { get; set; }
-        public DateTime Day { get; set; }
+        [Required]
+        public int CategoryId { get; set; }
+
+        [Required]
+        public double Distance { get; set; }
+
+        [Required]
+        public DateTime Date { get; set; }
     }
 }
