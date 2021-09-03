@@ -17,6 +17,8 @@ namespace FitnessMe_15118078.Data
 
         public DbSet<Weight> Weight { get; set; }
 
+        public DbSet<Workout> Workouts { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

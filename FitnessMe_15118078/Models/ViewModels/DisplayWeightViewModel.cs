@@ -2,12 +2,14 @@
 
 namespace FitnessMe_15118078.Models.ViewModels
 {
-    public class DisplayWeightViewModel
+    public class DisplayWorkoutViewModel
     {
         public int Id { get; set; }
 
-        public double Mass { get; set; }
+        public int CategoryId { get; set; }
 
-        public DateTime Day { get; set; }
+        public double Distance { get; set; }
+
+        public DateTime Date { get; set; }
     }
 }
