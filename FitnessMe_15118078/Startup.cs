@@ -39,8 +39,8 @@ namespace FitnessMe_15118078
 
             services.AddControllers();
 
-            services.AddDbContext<FitnessMeDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            // services.AddDbContext<FitnessMeDbContext>(options => options.UseInMemoryDatabase("FitnessMeDb"));
+            // services.AddDbContext<FitnessMeDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<FitnessMeDbContext>(options => options.UseInMemoryDatabase("FitnessMeDb"));
 
             services.AddScoped<JwtTokenGenerator>();
 

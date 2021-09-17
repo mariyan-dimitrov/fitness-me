@@ -4,10 +4,12 @@ using System;
 using System.Linq;
 using FitnessMe_15118078.Data.Models;
 using FitnessMe_15118078.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FitnessMe_15118078.Controllers
 {
     [Route("api/workout")]
+    [Authorize(Roles = "Administrator, PremiumUser")]
     public class WorkoutController : BaseAuthorizeController
     {
         private readonly FitnessMeDbContext _dbContext;

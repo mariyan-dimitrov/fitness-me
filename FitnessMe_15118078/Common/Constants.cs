@@ -5,7 +5,8 @@
         public class Roles
         {
             public const string Administrator = "Administrator";
-            public const string User = "User";
+            public const string BasicUser = "BasicUser";
+            public const string PremiumUser = "PremiumUser";
         }
     }
 }

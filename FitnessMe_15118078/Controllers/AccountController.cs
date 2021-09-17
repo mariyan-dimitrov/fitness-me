@@ -49,7 +49,7 @@ namespace FitnessMe_15118078.Controllers
                 return BadRequest($"Cannot create user. [{string.Join(',', creationUserResult.Errors.Select(x => x.Description))}]");
             }
 
-            IdentityResult assignUserToRoleResult = await _userManager.AddToRoleAsync(user, Constants.Roles.User);
+            IdentityResult assignUserToRoleResult = await _userManager.AddToRoleAsync(user, Constants.Roles.BasicUser);
             if (!assignUserToRoleResult.Succeeded)
             {
                 return BadRequest($"Cannot create user assign user to role User[{string.Join(',', assignUserToRoleResult.Errors.Select(x => x.Description))}]");
@@ -57,7 +57,7 @@ namespace FitnessMe_15118078.Controllers
 
             await _signInManager.SignInAsync(user, isPersistent: false);
 
-            return Ok(_jwtTokenGenerator.Generate(user, new List<string>() { Constants.Roles.User }));
+            return Ok(_jwtTokenGenerator.Generate(user, new List<string>() { Constants.Roles.BasicUser }));
         }
 
         [AllowAnonymous]
