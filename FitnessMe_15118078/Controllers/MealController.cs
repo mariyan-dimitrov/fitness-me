@@ -42,11 +42,9 @@ namespace FitnessMe_15118078.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetMeals(int pageNumber, int pageSize)
+        public IActionResult GetMeals()
         {
             var meals = _dbContext.Meal.Where(m => m.UserId == GetUserId())
-                                       .Skip(pageNumber * pageSize)
-                                       .Take(pageSize)
                                        .Select(m => new DisplayMealViewModel()
                                        {
                                            Id = m.Id,
